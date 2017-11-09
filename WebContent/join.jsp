@@ -29,28 +29,32 @@
 		</nav>
 		<!-- //header -->
 		<!-- container -->
-		<div>
-			<form method="post" action="joinAction.jsp">
-				<h2 style="text-align: center;">회원가입 화면</h3>
-				<div>
-					<input type="text" placeholder="아이디" name="userID" maxlength="20">
-				</div>
-				<div>
-					<input type="password" placeholder="패스워드" name="userPassword" maxlength="20">
-				</div>
-				<div>
-					<input type="text" placeholder="이름" name="userName" maxlength="20">
-				</div>
-				<div>
-					<input type="radio" name="userGender" value="남자">남자
-					<input type="radio" name="userGender" value="여자">여자
-				</div>
-				<div>
-					<input type="email" placeholder="이메일" name="userEmail"> 
-				</div>
-				<input type="submit" value="가입하기">
-				<input type="button" value="돌아가기 ">
-			</form>		
+		<div class="container">
+			<div class="col-lg-4"></div>
+			<div class="jumbotron" style="padding-top: 20px">
+				<form method="post" action="joinAction.jsp">
+					<h2 style="text-align: center;">회원가입 화면</h2>
+					<div class="form-group">
+						<input type="text" class="form-control" placeholder="아이디" name="userID" maxlength="20">
+					</div>
+					<div class="form-group">
+						<input type="password" class="form-control" placeholder="패스워드" name="userPassword" maxlength="20">
+					</div>
+					<div class="form-group" >
+						<input type="text" class="form-control" placeholder="이름" name="userName" maxlength="20">
+					</div>				
+					<div class="form-group" style="text-align: center;"">
+						<input type="radio" name="userGender" value="남자">남자
+						<input type="radio" name="userGender" value="여자">여자
+					</div>
+					<div class="form-group">
+						<input type="email" class="form-control" placeholder="이메일" name="userEmail"> 
+					</div>
+					<input type="submit" class="btn btn-default" value="가입하기">
+					<input type="button" class="btn btn-default" value="돌아가기 ">
+				</form>		
+			</div>
+			<div class="col-lg-4"></div>
 		</div>	
 		<!-- //container -->
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>

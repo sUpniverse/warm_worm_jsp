@@ -38,15 +38,16 @@
 			</div>
 			</nav>
 			<div class="jumbotron" style="padding-top: 20px" >
-				<form method="post" taction="loginAction.jsp">
+				<form method="post" action="loginAction.jsp">
 					<h2 style="text-align: center;">로그인 화면</h2>
 					<div class="form-group">
 						<input type="text" class="form-control" placeholder="아이디" name="userID" maxlength="20">
 					</div>
 					<div>
-						<input type="password" placeholder="패스워드" name="userPassword" maxlength="20">
+						<input type="password" class="form-control" placeholder="패스워드" name="userPassword" maxlength="20">
 					</div>
-						<input type="submit" value="로그인"> 						
+						<input type="submit"  class="btn btn-default"  value="로그인"> 
+												
 				</form>
 			</div>
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
