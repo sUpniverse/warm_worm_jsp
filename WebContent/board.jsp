@@ -1,6 +1,10 @@
+<%@page import="com.warm.dto.boardDTO"%>
+<%@page import="java.util.ArrayList"%>
+<%@page import="com.warm.dao.boardDAO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -17,7 +21,11 @@
 		String userID = null;
 		if(session.getAttribute("userID") != null) {
 			userID = session.getAttribute("userID").toString();
-		}	
+		}
+		int pageNumber = 1;
+		if(request.getParameter("pageNumber") != null) {
+			pageNumber = Integer.parseInt(request.getParameter("pageNumber"));
+		}
 	%>			
 	<nav class="navbar navbar-default">
 		<div class="navbar-header">
@@ -60,6 +68,57 @@
 			</c:choose>
 		</div>
 	</nav>
+	
+	<div class="container">
+		<table class="table table-default">
+				<thead>
+					<tr>
+						<th text-align="center"> 번호 </th>
+						<th text-align="center"> 제목 </th>
+						<th text-align="center"> 작성자 </th>
+						<th text-align="center"> 조회수 </th>						 
+						<th text-align="center"> 작성일자 </th>					
+					</tr>
+				</thead>
+		<!-- 		<tbody>
+					<%
+						//boardDAO boardDAO = new boardDAO();
+						//ArrayList<boardDTO> list = boardDAO.getlist(pageNumber);							
+					%>
+				 <tr>					
+					<c:forEach items="${list}" var="notice"> 
+					<td>${notice.getBoardID}</td>							
+					<td><a href="view.jsp?boardId=${notice.getBoardID}">${notice.getTitle}</a></td>
+					<td>${notice.getUserID }</td>						
+					<td>${notice.getBoardCount}</td>
+					<td>${notice.getBoardDate}</td>				
+					</c:forEach>
+				</tr>			
+			</tbody>
+		 -->
+		 
+		 		<% 
+					boardDAO bbsDAO =  new boardDAO();
+					ArrayList<boardDTO> list = bbsDAO.getlist(pageNumber);					
+					for(int i = 0; i < list.size(); i++) {						
+					
+				%>
+					<tr>
+						<td><%=list.get(i).getBoardID() %></td>
+						<td><a href = "view.jsp?bbsID=<%=list.get(i).getBoardID() %>"><%=list.get(i).getBoardTitle()%></a></td>
+						<td><%=list.get(i).getBoardUserID()%></td>
+						<td><%=list.get(i).getBoardCount()%></td>
+						<td><%=list.get(i).getBoardDate()%></td>						
+					</tr>
+				<%
+					}
+				
+				%>		 
+		 						
+		</table>			
+		<a href="write.jsp" class="btn btn-default">글쓰기</a>		
+	</div>	
+	
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 	<script src="js/bootstrap.js"></script>		
 </body>

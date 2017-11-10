@@ -6,7 +6,7 @@ public class boardDTO {
 	private String boardUserID;
 	private String boardTitle;
 	private String boardContent;
-	private String boardCount;
+	private int boardCount;
 	private String boardDate;
 	private int boardAvailable;
 	
@@ -35,10 +35,10 @@ public class boardDTO {
 	public void setBoardContent(String boardContent) {
 		this.boardContent = boardContent;
 	}
-	public String getBoardCount() {
+	public int getBoardCount() {
 		return boardCount;
 	}
-	public void setBoardCount(String boardCount) {
+	public void setBoardCount(int boardCount) {
 		this.boardCount = boardCount;
 	}
 	public String getBoardDate() {

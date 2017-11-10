@@ -5,10 +5,12 @@ import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+
+import com.warm.dto.boardDTO;
 
 public class boardDAO {
 	private Connection con;	
-	private PreparedStatement pstmt;
 	private ResultSet rs;
 	
 	public boardDAO() {
@@ -31,7 +33,7 @@ public class boardDAO {
 		String query = "Select boardID from board ORDER BY boardID desc";
 		
 		try {
-			pstmt = con.prepareStatement(query);
+			PreparedStatement pstmt = con.prepareStatement(query);
 			rs = pstmt.executeQuery();
 			if(rs.next()) {
 				return rs.getInt(1) + 1 ;
@@ -47,7 +49,7 @@ public class boardDAO {
 	
 	public String getDate() {
 		String query = "Select NOW()";
-		
+		PreparedStatement pstmt;
 		try {
 			pstmt = con.prepareStatement(query);
 			rs = pstmt.executeQuery();
@@ -62,9 +64,37 @@ public class boardDAO {
 		return " ";
 	}
 	
+	public ArrayList<boardDTO> getlist(int pageNumber) {
+		
+		String query = "select * from board where boardId < ? AND boardAvailable = 1 ORDER BY boardId desc Limit 10";
+		ArrayList<boardDTO> list = new ArrayList<boardDTO>();
+		
+		try {
+			PreparedStatement pstmt  = con.prepareStatement(query);
+			pstmt.setInt(1, getNext() - (pageNumber -1) * 10);
+			rs = pstmt.executeQuery();
+			while(rs.next()) {
+				boardDTO boardDTO = new boardDTO();
+				boardDTO.setBoardID(rs.getInt(1));
+				boardDTO.setBoardUserID(rs.getString(2));
+				boardDTO.setBoardTitle(rs.getString(3));
+				boardDTO.setBoardContent(rs.getString(4));
+				boardDTO.setBoardCount(rs.getInt(5));
+				boardDTO.setBoardDate(rs.getString(6));
+				boardDTO.setBoardAvailable(rs.getInt(7));
+				list.add(boardDTO);
+			}
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}		
+		
+		return list;	
+	}
+	
 	
 	public int write(String boardTitle, String userID, String boardContent) {
-		String query = "Insert into values(?,?,?,?,?,?,?)";
+		String query = "Insert into board values(?,?,?,?,?,?,?)";
 		
 		try {
 			PreparedStatement pstmt = con.prepareStatement(query);
