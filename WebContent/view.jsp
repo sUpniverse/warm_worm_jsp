@@ -1,10 +1,12 @@
+<%@page import="java.io.PrintWriter"%>
 <%@page import="com.warm.dto.boardDTO"%>
 <%@page import="java.util.ArrayList"%>
 <%@page import="com.warm.dao.boardDAO"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
+
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -12,6 +14,7 @@
 <meta name = "viewport" content="width-device-width", initial-scale="1">
 <link rel ="stylesheet" href="css/bootstrap.css">
 <link rel ="stylesheet" href="css/custom.css"> 
+
 
 <title>Insert title here</title>
 </head>
@@ -22,10 +25,22 @@
 		if(session.getAttribute("userID") != null) {
 			userID = session.getAttribute("userID").toString();
 		}
-		int pageNumber = 1;
-		if(request.getParameter("pageNumber") != null) {
-			pageNumber = Integer.parseInt(request.getParameter("pageNumber"));
+		int boardID = 0;
+		if(request.getParameter("boardID") != null) {
+			boardID = Integer.parseInt(request.getParameter("boardID"));
 		}
+		if(boardID == 0) {
+			PrintWriter writer = response.getWriter();
+			writer.println("<script>");
+			writer.println("alert('게시글이 유효하지 않습니다')");
+			writer.println("history.back()");
+			writer.println("</script>");
+			
+		} else {
+			boardDTO boardDTO = new boardDAO().read(boardID);
+			request.setAttribute("boardDTO", boardDTO);			
+		}
+		
 	%>			
 	<nav class="navbar navbar-default">
 		<div class="navbar-header">
@@ -70,36 +85,36 @@
 	</nav>
 	
 	<div class="container">
-		<table class="table table-default">
+		<table class="table table-default" style=" text-align: center; border : 1px solid #dddddd">
 				<thead>
 					<tr>
-						<th text-align="center"> 번호 </th>
-						<th text-align="center"> 제목 </th>
-						<th text-align="center"> 작성자 </th>
-						<th text-align="center"> 조회수 </th>						 
-						<th text-align="center"> 작성일자 </th>					
+						<th col-span ="3" text-align="center" style="background-color: #eeeeee;">게시판 글 보기</th>							
 					</tr>
 				</thead>
 				<tbody>
-					<%
-						boardDAO boardDAO = new boardDAO();
-						ArrayList<boardDTO> list = boardDAO.getlist(pageNumber);
-						request.setAttribute("list", list);
-					%>
-					<c:forEach items="${list}" var="notice"> 
-				 <tr>										
-					<td>${notice.boardID}</td>							
-					<td><a href="view.jsp?boardID=${notice.boardID}">${notice.boardTitle}</a></td>
-					<td>${notice.boardUserID }</td>						
-					<td>${notice.boardCount}</td>
-					<td>${notice.boardDate}</td>					
-				</tr>			
-					</c:forEach>
-			</tbody>
-		 		 
-		 						
+					<tr> 
+						<td>글 제목</td>						
+						<td col-span="2">${boardDTO.boardTitle} </td>	
+					</tr>
+					<tr>
+						<td>작성자 </td>
+						<td>${boardDTO.boardUserID} </td>
+						<td> 글 번호 </td>
+						<td>${boardDTO.boardID} </td>
+					</tr>
+					<tr>
+						<td>작성일자</td>
+						<td> </td>
+						<td>조회수	 </td>
+						<td> </td>
+					</tr>
+					<tr>
+						<td>글 내용 </td>
+						<td> </td>
+					</tr>						
+				</tbody>		 						
 		</table>			
-		<a href="write.jsp" class="btn btn-default">글쓰기</a>		
+		<a href="board.jsp" class="btn btn-default">목록</a>		
 	</div>	
 	
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>

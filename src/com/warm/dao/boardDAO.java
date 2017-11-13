@@ -113,4 +113,34 @@ public class boardDAO {
 		
 		return -1;
 	}
+	
+	public boardDTO read(int boardID) {
+			
+		String query = "Select * from board where boardID = ?";		
+		
+		try {
+			PreparedStatement pstmt = con.prepareStatement(query);
+			pstmt.setInt(1, boardID);
+			rs= pstmt.executeQuery();
+			if(rs.next()) {
+				while(rs.next()) {
+					boardDTO boardDTO = new boardDTO();	
+					boardDTO.setBoardID(rs.getInt(1));
+					boardDTO.setBoardUserID(rs.getString(2));
+					boardDTO.setBoardTitle(rs.getString(3));
+					boardDTO.setBoardContent(rs.getString(4));
+					boardDTO.setBoardCount(rs.getInt(5));
+					boardDTO.setBoardDate(rs.getString(6));
+					boardDTO.setBoardAvailable(rs.getInt(7));					
+					return boardDTO;
+				}
+				
+			}
+			
+		} catch (Exception e) {
+			// TODO: handle exception
+		}				
+		
+		return null;
+	}
 }
