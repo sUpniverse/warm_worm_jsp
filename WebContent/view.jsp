@@ -36,11 +36,10 @@
 			writer.println("history.back()");
 			writer.println("</script>");
 			
-		} else {
-			boardDTO boardDTO = new boardDAO().read(boardID);
-			request.setAttribute("boardDTO", boardDTO);			
-		}
-		
+		}		
+		new boardDAO().count(boardID);
+		boardDTO boardDTO = new boardDAO().read(boardID);				
+		request.setAttribute("boardDTO", boardDTO);
 	%>			
 	<nav class="navbar navbar-default">
 		<div class="navbar-header">
@@ -94,27 +93,29 @@
 				<tbody>
 					<tr> 
 						<td>글 제목</td>						
-						<td col-span="2">${boardDTO.boardTitle} </td>	
+						<td col-span="2"><%=boardDTO.getBoardTitle().replaceAll(" ", "&nbsp;")%> </td>	
 					</tr>
 					<tr>
 						<td>작성자 </td>
-						<td>${boardDTO.boardUserID} </td>
+						<td>${boardDTO.boardUserID}</td>
 						<td> 글 번호 </td>
-						<td>${boardDTO.boardID} </td>
+						<td>${boardDTO.boardID}</td>
 					</tr>
 					<tr>
 						<td>작성일자</td>
-						<td> </td>
+						<td>${boardDTO.boardDate}</td>
 						<td>조회수	 </td>
-						<td> </td>
+						<td>${boardDTO.boardCount}</td>
 					</tr>
 					<tr>
 						<td>글 내용 </td>
-						<td> </td>
+						<td colspan=2 style="min-height: 200px; text-align: left">${boardDTO.boardContent}</td>
 					</tr>						
 				</tbody>		 						
 		</table>			
 		<a href="board.jsp" class="btn btn-default">목록</a>		
+		<a href="update.jsp?boardID=${boardDTO.boardID}" class="btn btn-default">수정</a>
+		<a onclick="return confirm('정말 삭제하시겠습니까?')" href="deleteAction.jsp?boardID=${boardDTO.boardID}" class="btn btn-default">삭제</a>		
 	</div>	
 	
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>

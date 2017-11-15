@@ -92,6 +92,51 @@ public class boardDAO {
 		return list;	
 	}
 	
+	public int update(int boardID,String boardTitle,String boardContent) {
+		String query = "update board SET boardTitle = ?, boardContent = ? where boardID = ?";
+		
+		try {
+			PreparedStatement pstmt = con.prepareStatement(query);		
+			pstmt.setString(1, boardTitle);
+			pstmt.setString(2, boardContent);
+			pstmt.setInt(3, boardID);
+			return  pstmt.executeUpdate();			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return -1;
+	}
+	
+	public int delete(int boardID) {
+		String query = "update board SET boardAvailable = 0 where boardID = ?";
+		
+		try {
+			PreparedStatement pstmt = con.prepareStatement(query);
+			pstmt.setInt(1, boardID);
+			return  pstmt.executeUpdate();			
+		} catch (Exception e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return -1;
+	}
+	
+	public void count (int boardID) {
+		String query = "update board SET boardCount = boardCount+1 where boardID = ?";
+		
+		try {
+			PreparedStatement pstmt = con.prepareStatement(query);
+			pstmt.setInt(1, boardID);
+			pstmt.executeUpdate();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		
+	}
+	
 	
 	public int write(String boardTitle, String userID, String boardContent) {
 		String query = "Insert into board values(?,?,?,?,?,?,?)";
@@ -122,8 +167,7 @@ public class boardDAO {
 			PreparedStatement pstmt = con.prepareStatement(query);
 			pstmt.setInt(1, boardID);
 			rs= pstmt.executeQuery();
-			if(rs.next()) {
-				while(rs.next()) {
+			if(rs.next()) {				
 					boardDTO boardDTO = new boardDTO();	
 					boardDTO.setBoardID(rs.getInt(1));
 					boardDTO.setBoardUserID(rs.getString(2));
@@ -132,9 +176,7 @@ public class boardDAO {
 					boardDTO.setBoardCount(rs.getInt(5));
 					boardDTO.setBoardDate(rs.getString(6));
 					boardDTO.setBoardAvailable(rs.getInt(7));					
-					return boardDTO;
-				}
-				
+					return boardDTO;				
 			}
 			
 		} catch (Exception e) {

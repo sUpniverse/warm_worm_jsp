@@ -1,10 +1,9 @@
-<%@page import="com.warm.dto.boardDTO"%>
-<%@page import="java.util.ArrayList"%>
 <%@page import="com.warm.dao.boardDAO"%>
+<%@page import="com.warm.dto.boardDTO"%>
+<%@page import="java.io.PrintWriter"%>
 <%@ page language="java" contentType="text/html; charset=UTF-8"
     pageEncoding="UTF-8"%>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
-<%@ taglib prefix="fn" uri="http://java.sun.com/jsp/jstl/functions" %>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <html>
 <head>
@@ -14,25 +13,45 @@
 <link rel ="stylesheet" href="css/custom.css"> 
 
 <title>Insert title here</title>
-<style type="text/css">
-	a, a:hover {
-		color : #000000;
-		text-decoration: none;
-	}
-</style>
 </head>
 <body>
 	
-	<% 			
+	<% 
+	String userID = null;
+	if(session.getAttribute("userID") != null) {
+		userID = session.getAttribute("userID").toString();
+	}	
+	if(userID == null) {
+		PrintWriter script = response.getWriter();
+		script.println("<script>");			
+		script.println("alert('로그인을 하세요')");
+		script.println("location.href = 'login.jsp'");
+		script.println("</script>");				
+	}
+	
+	int boardID = 0;
+	if(request.getParameter("boardID") != null) {
+		boardID = Integer.parseInt(request.getParameter("boardID"));
+	}
+	if(boardID == 0) {
+		PrintWriter script = response.getWriter();
+		script.println("<script>");			
+		script.println("alert('유효하지 않은 글입니다.')");
+		script.println("history.back()");
+		script.println("</script>");			
+	}
+	
+	boardDTO boardDTO = new boardDAO().read(boardID);
+	
+	if(!userID.equals(boardDTO.getBoardUserID()) ) {
+		PrintWriter script = response.getWriter();
+		script.println("<script>");			
+		script.println("alert('권한이 없습니다.')");
+		script.println("history.back()");
+		script.println("</script>");		
+	}
+	request.setAttribute("board", boardDTO);
 		
-		String userID = null;
-		if(session.getAttribute("userID") != null) {
-			userID = session.getAttribute("userID").toString();
-		}
-		int pageNumber = 1;
-		if(request.getParameter("pageNumber") != null) {
-			pageNumber = Integer.parseInt(request.getParameter("pageNumber"));
-		}
 	%>			
 	<nav class="navbar navbar-default">
 		<div class="navbar-header">
@@ -77,41 +96,25 @@
 	</nav>
 	
 	<div class="container">
-		<table class="table table-default">
-				<thead>
-					<tr>
-						<th text-align="center"> 번호 </th>
-						<th text-align="center"> 제목 </th>
-						<th text-align="center"> 작성자 </th>
-						<th text-align="center"> 조회수 </th>						 
-						<th text-align="center"> 작성일자 </th>					
-					</tr>
-				</thead>
-				<tbody>
-					<%
-						boardDAO boardDAO = new boardDAO();
-						ArrayList<boardDTO> list = boardDAO.getlist(pageNumber);
-						request.setAttribute("list", list);
-					%>
-					<c:forEach items="${list}" var="notice"> 
-				 <tr>										
-					<td>${notice.boardID}</td>							
-					<td><a href="view.jsp?boardID=${notice.boardID}">${notice.boardTitle}</a></td>
-					<td>${notice.boardUserID }</td>						
-					<td>${notice.boardCount}</td>
-					<td>${notice.boardDate}</td>					
-				</tr>			
-					</c:forEach>
-			</tbody>		 						
-		</table>			
-		<c:choose test=${pageNumber not eq 1}>
-			<a href="bbs.jsp?pageNumber=${pageNumber -1 }" class="btn btn-success btn-arraw-left">이전</a>		
-		</c:choose>
-		<c:choose test=${ }></c:choose>
-		
-		<a href="write.jsp" class="btn btn-default">글쓰기</a>		
-	</div>	
-	
+		<form method="post" action="updateAction.jsp?boardID=${board.boardID}">
+			<table class="table table-default">
+					<thead>
+						<tr>
+							<th colspan="2" text-align="center"><h2>게시판 글쓰기 양식</h2></th>							
+						</tr>
+					</thead>
+					<tbody>						
+						<tr>
+							<td> <input type="text" class="form-control" value="${board.boardTitle}" name="boardTitle" placeholder="글제목" maxlength="50"> </td>
+						</tr>
+						<tr>
+							<td> <textarea class="form-control" placeholder="글 내용" name="boardContent" maxlength="2048" style="height: 350px;" >${board.boardContent}</textarea>
+					</tbody>					
+			</table>
+			<input type="submit" class="btn btn-default" value="수정하기">
+			<input type="button" class="btn btn-default" value="돌아가기" onclick="history.back()">
+		</form>					
+	</div>		
 	<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 	<script src="js/bootstrap.js"></script>		
 </body>
